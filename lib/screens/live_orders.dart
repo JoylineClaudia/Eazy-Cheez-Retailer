@@ -1,22 +1,40 @@
+import 'dart:convert';
+
 import 'package:eazy_cheez_retail/screens/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter/src/rendering/box.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
 
 class LiveOrders extends StatefulWidget {
-  const LiveOrders({super.key});
+  const LiveOrders({Key? key}) : super(key: key);
 
   @override
   State<LiveOrders> createState() => _LiveOrdersState();
 }
 
 class _LiveOrdersState extends State<LiveOrders> {
-  final scaffoldKey = GlobalKey<ScaffoldState>();
+  //final scaffoldKey = GlobalKey<ScaffoldState>();
+  List<dynamic> _users = [];
+  Future loadUserList() async {
+    var res = await http.get(Uri.https("dummyjson.com", "users"));
+    if (res.statusCode == 200) {
+      var jsonData = jsonDecode(res.body);
+      if (jsonData['users'].isNotEmpty) {
+        setState(() {
+          _users = jsonData['users'];
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    loadUserList();
     return Scaffold(
-      key: scaffoldKey,
+      //key: scaffoldKey,
       appBar: AppBar(
         backgroundColor: Color(0xFFA3C834),
         automaticallyImplyLeading: false,
@@ -56,820 +74,539 @@ class _LiveOrdersState extends State<LiveOrders> {
       ),
 
       backgroundColor: Colors.white,
-      body: SafeArea(
-        child: GestureDetector(
-          onTap: () => FocusScope.of(context).unfocus(),
-          child: ListView(
-            scrollDirection: Axis.vertical,
-            children: <Widget>[
-              Column(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Container(
-                    width: double.infinity,
-                    height: 172,
-                    decoration: BoxDecoration(
-                      color: Color(0xFFF6F6F6),
-                    ),
-                  ),
+      body: ListView.builder(
+        itemCount: _users.length,
+        itemBuilder: ((context, index) {
+          return Padding(
+            padding: const EdgeInsets.all(0.0),
+            child: Container(
+              margin: const EdgeInsets.symmetric(
+                horizontal: 15.0,
+                vertical: 10.0,
+              ),
+              child: ListView(
+                shrinkWrap: true,
+                scrollDirection: Axis.vertical,
+                children: <Widget>[
                   Column(
                     mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Padding(
-                            padding:
-                                EdgeInsetsDirectional.fromSTEB(21, 14, 0, 10),
-                            child: Text(
-                              'Live orders',
-                              style: TextStyle(
-                                fontFamily: 'Poppins',
-                                fontSize: 11,
-                              ),
-                            ),
-                          ),
-                        ],
+                      Container(
+                        width: double.infinity,
+                        height: 172,
+                        child: Image.network(
+                          _users[index]['image'],
+                          fit: BoxFit.cover,
+                        ),
+                        // decoration: BoxDecoration(
+                        //   color: Color(0xFFF6F6F6),
+                        // ),
                       ),
-                      //item section
                       Column(
                         mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          Row(children: <Widget>[
-                            Text(
-                              "      Helo text",
-                              style: TextStyle(
-                                fontFamily: 'Poppins',
-                                fontSize: 13,
-                              ),
-                            ),
-                            Spacer(),
-                            Text(
-                              "Some Data     ",
-                              style: TextStyle(
-                                fontFamily: 'Poppins',
-                                fontSize: 11,
-                              ),
-                            )
-                          ]),
                           Row(
+                            mainAxisSize: MainAxisSize.max,
                             children: [
                               Padding(
-                                padding: const EdgeInsetsDirectional.fromSTEB(
-                                    21, 2, 0, 0),
+                                padding: EdgeInsetsDirectional.fromSTEB(
+                                    5, 14, 0, 10),
                                 child: Text(
-                                  'hello',
+                                  'Live orders',
                                   style: TextStyle(
-                                    fontFamily: 'Poppins',
-                                    fontSize: 11,
+                                    fontFamily: 'Inter',
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w400,
                                   ),
                                 ),
-                              )
+                              ),
                             ],
                           ),
-                          Container(
-                            height: 150,
-                            child: ListView(
-                              scrollDirection: Axis.horizontal,
-                              children: <Widget>[
-                                Column(
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsetsDirectional.fromSTEB(
-                                          21, 5, 5, 5),
-                                      child: Container(
-                                        height: 70,
-                                        width: 70,
-                                        decoration: BoxDecoration(
-                                          color: Color(0xFFF6F6F6),
-                                          borderRadius:
-                                              BorderRadius.circular(100),
-                                        ),
-                                      ),
+                          //item section
+                          Column(
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              Row(children: <Widget>[
+                                Padding(
+                                  padding: EdgeInsets.all(5.0),
+                                  child: Text(
+                                    _users[index]['firstName'],
+                                    style: TextStyle(
+                                      fontFamily: 'Inter',
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w400,
                                     ),
-                                    Padding(
-                                      padding: EdgeInsets.all(2.0),
-                                      child: Text(
-                                        'Item 1',
-                                        textAlign: TextAlign.left,
-                                        style: TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontSize: 11,
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.all(0.0),
-                                      child: Text(
-                                        'Price',
-                                        textAlign: TextAlign.left,
-                                        style: TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontSize: 9,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                                  ),
                                 ),
-                                Column(
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsets.all(5.0),
-                                      child: Container(
-                                        height: 70,
-                                        width: 70,
-                                        decoration: BoxDecoration(
-                                          color: Color(0xFFF6F6F6),
-                                          borderRadius:
-                                              BorderRadius.circular(100),
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.all(2.0),
-                                      child: Text(
-                                        'Item 2',
-                                        style: TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontSize: 11,
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.all(0.0),
-                                      child: Text(
-                                        'Price',
-                                        style: TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontSize: 9,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                                Spacer(),
+                                Text(
+                                  "Details   ",
+                                  style: TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w400,
+                                  ),
                                 ),
-                                Column(
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsets.all(5.0),
+                                Text(
+                                  ">   ",
+                                  style: TextStyle(
+                                    fontFamily: 'Poppins',
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                )
+                              ]),
+                              Row(
+                                children: [
+                                  Padding(
+                                    padding:
+                                        const EdgeInsetsDirectional.fromSTEB(
+                                            5, 2, 0, 0),
+                                    child: Text(
+                                      _users[index]['lastName'],
+                                      style: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontSize: 11,
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                              Container(
+                                height: 150,
+                                child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: _users.length,
+                                  itemBuilder: ((context, index) {
+                                    return Padding(
+                                      padding: const EdgeInsets.all(0.0),
                                       child: Container(
-                                        height: 70,
-                                        width: 70,
-                                        decoration: BoxDecoration(
-                                          color: Color(0xFFF6F6F6),
-                                          borderRadius:
-                                              BorderRadius.circular(100),
+                                        margin: const EdgeInsets.symmetric(
+                                          horizontal: 15.0,
+                                          vertical: 10.0,
                                         ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.all(2.0),
-                                      child: Text(
-                                        'Item 3',
-                                        style: TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontSize: 11,
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.all(0.0),
-                                      child: Text(
-                                        'Price',
-                                        style: TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontSize: 9,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsets.all(5.0),
-                                      child: Container(
-                                        height: 70,
-                                        width: 70,
-                                        decoration: BoxDecoration(
-                                          color: Color(0xFFF6F6F6),
-                                          borderRadius:
-                                              BorderRadius.circular(100),
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.all(2.0),
-                                      child: Text(
-                                        'item 4',
-                                        style: TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontSize: 11,
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.all(0.0),
-                                      child: Text(
-                                        'Price',
-                                        style: TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontSize: 9,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
 
-                      //item secton 2
-                      Column(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Row(children: <Widget>[
-                            Text(
-                              "      Helo text",
-                              style: TextStyle(
-                                fontFamily: 'Poppins',
-                                fontSize: 13,
-                              ),
-                            ),
-                            Spacer(),
-                            Text(
-                              "Some Data     ",
-                              style: TextStyle(
-                                fontFamily: 'Poppins',
-                                fontSize: 11,
-                              ),
-                            )
-                          ]),
-                          Row(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsetsDirectional.fromSTEB(
-                                    21, 2, 0, 0),
-                                child: Text(
-                                  'hello',
-                                  style: TextStyle(
-                                    fontFamily: 'Poppins',
-                                    fontSize: 11,
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                          Container(
-                            height: 150,
-                            child: ListView(
-                              scrollDirection: Axis.horizontal,
-                              children: <Widget>[
-                                Column(
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsetsDirectional.fromSTEB(
-                                          21, 5, 5, 5),
-                                      child: Container(
-                                        height: 70,
-                                        width: 70,
-                                        decoration: BoxDecoration(
-                                          color: Color(0xFFF6F6F6),
-                                          borderRadius:
-                                              BorderRadius.circular(100),
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.all(2.0),
-                                      child: Text(
-                                        'Item 1',
-                                        style: TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontSize: 11,
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.all(0.0),
-                                      child: Text(
-                                        'Price',
-                                        style: TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontSize: 9,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsets.all(5.0),
-                                      child: Container(
-                                        height: 70,
-                                        width: 70,
-                                        decoration: BoxDecoration(
-                                          color: Color(0xFFF6F6F6),
-                                          borderRadius:
-                                              BorderRadius.circular(100),
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.all(2.0),
-                                      child: Text(
-                                        'Item 2',
-                                        style: TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontSize: 11,
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.all(0.0),
-                                      child: Text(
-                                        'Price',
-                                        style: TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontSize: 9,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsets.all(5.0),
-                                      child: Container(
-                                        height: 70,
-                                        width: 70,
-                                        decoration: BoxDecoration(
-                                          color: Color(0xFFF6F6F6),
-                                          borderRadius:
-                                              BorderRadius.circular(100),
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.all(2.0),
-                                      child: Text(
-                                        'Item 3',
-                                        style: TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontSize: 11,
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.all(0.0),
-                                      child: Text(
-                                        'Price',
-                                        style: TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontSize: 9,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsets.all(5.0),
-                                      child: Container(
-                                        height: 70,
-                                        width: 70,
-                                        decoration: BoxDecoration(
-                                          color: Color(0xFFF6F6F6),
-                                          borderRadius:
-                                              BorderRadius.circular(100),
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.all(2.0),
-                                      child: Text(
-                                        'item 4',
-                                        style: TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontSize: 11,
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.all(0.0),
-                                      child: Text(
-                                        'Price',
-                                        style: TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontSize: 9,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
+                                        // children: <Widget>[
 
-                      //item section 3
-                      Column(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Row(children: <Widget>[
-                            Text(
-                              "      Helo text",
-                              style: TextStyle(
-                                fontFamily: 'Poppins',
-                                fontSize: 13,
-                              ),
-                            ),
-                            Spacer(),
-                            Text(
-                              "Some Data     ",
-                              style: TextStyle(
-                                fontFamily: 'Poppins',
-                                fontSize: 11,
-                              ),
-                            )
-                          ]),
-                          Row(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsetsDirectional.fromSTEB(
-                                    21, 2, 0, 0),
-                                child: Text(
-                                  'hello',
-                                  style: TextStyle(
-                                    fontFamily: 'Poppins',
-                                    fontSize: 11,
-                                  ),
+                                        child: Column(
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsetsDirectional
+                                                  .fromSTEB(2, 5, 2, 5),
+                                              child: Container(
+                                                height: 70,
+                                                width: 70,
+                                                decoration: BoxDecoration(
+                                                  color: Color(0xFFF6F6F6),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          100),
+                                                ),
+                                                child: Image.network(
+                                                  _users[index]['image'],
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.all(2.0),
+                                              child: Text(
+                                                _users[index]['firstName'],
+                                                textAlign: TextAlign.left,
+                                                style: TextStyle(
+                                                  fontFamily: 'Poppins',
+                                                  fontSize: 11,
+                                                ),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.all(0.0),
+                                              child: Text(
+                                                _users[index]['phone'],
+                                                textAlign: TextAlign.left,
+                                                style: TextStyle(
+                                                  fontFamily: 'Poppins',
+                                                  fontSize: 9,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  }),
                                 ),
                               )
                             ],
                           ),
-                          Container(
-                            height: 150,
-                            child: ListView(
-                              scrollDirection: Axis.horizontal,
-                              children: <Widget>[
-                                Column(
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsetsDirectional.fromSTEB(
-                                          21, 5, 5, 5),
-                                      child: Container(
-                                        height: 70,
-                                        width: 70,
-                                        decoration: BoxDecoration(
-                                          color: Color(0xFFF6F6F6),
-                                          borderRadius:
-                                              BorderRadius.circular(100),
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.all(2.0),
-                                      child: Text(
-                                        'Item 1',
-                                        style: TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontSize: 11,
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.all(0.0),
-                                      child: Text(
-                                        'Price',
-                                        style: TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontSize: 9,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsets.all(5.0),
-                                      child: Container(
-                                        height: 70,
-                                        width: 70,
-                                        decoration: BoxDecoration(
-                                          color: Color(0xFFF6F6F6),
-                                          borderRadius:
-                                              BorderRadius.circular(100),
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.all(2.0),
-                                      child: Text(
-                                        'Item 2',
-                                        style: TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontSize: 11,
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.all(0.0),
-                                      child: Text(
-                                        'Price',
-                                        style: TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontSize: 9,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsets.all(5.0),
-                                      child: Container(
-                                        height: 70,
-                                        width: 70,
-                                        decoration: BoxDecoration(
-                                          color: Color(0xFFF6F6F6),
-                                          borderRadius:
-                                              BorderRadius.circular(100),
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.all(2.0),
-                                      child: Text(
-                                        'Item 3',
-                                        style: TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontSize: 11,
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.all(0.0),
-                                      child: Text(
-                                        'Price',
-                                        style: TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontSize: 9,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsets.all(5.0),
-                                      child: Container(
-                                        height: 70,
-                                        width: 70,
-                                        decoration: BoxDecoration(
-                                          color: Color(0xFFF6F6F6),
-                                          borderRadius:
-                                              BorderRadius.circular(100),
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.all(2.0),
-                                      child: Text(
-                                        'item 4',
-                                        style: TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontSize: 11,
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.all(0.0),
-                                      child: Text(
-                                        'Price',
-                                        style: TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontSize: 9,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                      //item section 4
-                      Column(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Row(children: <Widget>[
-                            Text(
-                              "      Helo text",
-                              style: TextStyle(
-                                fontFamily: 'Poppins',
-                                fontSize: 13,
-                              ),
-                            ),
-                            Spacer(),
-                            Text(
-                              "Some Data     ",
-                              style: TextStyle(
-                                fontFamily: 'Poppins',
-                                fontSize: 11,
-                              ),
-                            )
-                          ]),
-                          Row(
+
+                          //item secton 2
+                          Column(
+                            mainAxisSize: MainAxisSize.max,
                             children: [
-                              Padding(
-                                padding: const EdgeInsetsDirectional.fromSTEB(
-                                    21, 2, 0, 0),
-                                child: Text(
-                                  'hello',
+                              Row(children: <Widget>[
+                                Padding(
+                                  padding: EdgeInsets.all(5.0),
+                                  child: Text(
+                                    _users[index]['firstName'],
+                                    style: TextStyle(
+                                      fontFamily: 'Inter',
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                ),
+                                Spacer(),
+                                Text(
+                                  "Details   ",
+                                  style: TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                                Text(
+                                  ">   ",
                                   style: TextStyle(
                                     fontFamily: 'Poppins',
-                                    fontSize: 11,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w600,
                                   ),
+                                )
+                              ]),
+                              Row(
+                                children: [
+                                  Padding(
+                                    padding:
+                                        const EdgeInsetsDirectional.fromSTEB(
+                                            5, 2, 0, 0),
+                                    child: Text(
+                                      _users[index]['lastName'],
+                                      style: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontSize: 11,
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                              Container(
+                                height: 150,
+                                child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: _users.length,
+                                  itemBuilder: ((context, index) {
+                                    return Padding(
+                                      padding: const EdgeInsets.all(0.0),
+                                      child: Container(
+                                        margin: const EdgeInsets.symmetric(
+                                          horizontal: 15.0,
+                                          vertical: 10.0,
+                                        ),
+
+                                        // children: <Widget>[
+
+                                        child: Column(
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsetsDirectional
+                                                  .fromSTEB(2, 5, 2, 5),
+                                              child: Container(
+                                                height: 70,
+                                                width: 70,
+                                                decoration: BoxDecoration(
+                                                  color: Color(0xFFF6F6F6),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          100),
+                                                ),
+                                                child: Image.network(
+                                                  _users[index]['image'],
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.all(2.0),
+                                              child: Text(
+                                                _users[index]['firstName'],
+                                                textAlign: TextAlign.left,
+                                                style: TextStyle(
+                                                  fontFamily: 'Poppins',
+                                                  fontSize: 11,
+                                                ),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.all(0.0),
+                                              child: Text(
+                                                _users[index]['phone'],
+                                                textAlign: TextAlign.left,
+                                                style: TextStyle(
+                                                  fontFamily: 'Poppins',
+                                                  fontSize: 9,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  }),
                                 ),
                               )
                             ],
                           ),
-                          Container(
-                            height: 150,
-                            child: ListView(
-                              scrollDirection: Axis.horizontal,
-                              children: <Widget>[
-                                Column(
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsetsDirectional.fromSTEB(
-                                          21, 5, 5, 5),
-                                      child: Container(
-                                        height: 70,
-                                        width: 70,
-                                        decoration: BoxDecoration(
-                                          color: Color(0xFFF6F6F6),
-                                          borderRadius:
-                                              BorderRadius.circular(100),
-                                        ),
-                                      ),
+                          //item section 3
+                          Column(
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              Row(children: <Widget>[
+                                Padding(
+                                  padding: EdgeInsets.all(5.0),
+                                  child: Text(
+                                    _users[index]['firstName'],
+                                    style: TextStyle(
+                                      fontFamily: 'Inter',
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w400,
                                     ),
-                                    Padding(
-                                      padding: EdgeInsets.all(2.0),
-                                      child: Text(
-                                        'Item 1',
-                                        style: TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontSize: 11,
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.all(0.0),
-                                      child: Text(
-                                        'Price',
-                                        style: TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontSize: 9,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                                  ),
                                 ),
-                                Column(
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsets.all(5.0),
-                                      child: Container(
-                                        height: 70,
-                                        width: 70,
-                                        decoration: BoxDecoration(
-                                          color: Color(0xFFF6F6F6),
-                                          borderRadius:
-                                              BorderRadius.circular(100),
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.all(2.0),
-                                      child: Text(
-                                        'Item 2',
-                                        style: TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontSize: 11,
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.all(0.0),
-                                      child: Text(
-                                        'Price',
-                                        style: TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontSize: 9,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                                Spacer(),
+                                Text(
+                                  "Details   ",
+                                  style: TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w400,
+                                  ),
                                 ),
-                                Column(
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsets.all(5.0),
+                                Text(
+                                  ">   ",
+                                  style: TextStyle(
+                                    fontFamily: 'Poppins',
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                )
+                              ]),
+                              Row(
+                                children: [
+                                  Padding(
+                                    padding:
+                                        const EdgeInsetsDirectional.fromSTEB(
+                                            5, 2, 0, 0),
+                                    child: Text(
+                                      _users[index]['lastName'],
+                                      style: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontSize: 11,
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                              Container(
+                                height: 150,
+                                child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: _users.length,
+                                  itemBuilder: ((context, index) {
+                                    return Padding(
+                                      padding: const EdgeInsets.all(0.0),
                                       child: Container(
-                                        height: 70,
-                                        width: 70,
-                                        decoration: BoxDecoration(
-                                          color: Color(0xFFF6F6F6),
-                                          borderRadius:
-                                              BorderRadius.circular(100),
+                                        margin: const EdgeInsets.symmetric(
+                                          horizontal: 15.0,
+                                          vertical: 10.0,
+                                        ),
+
+                                        // children: <Widget>[
+
+                                        child: Column(
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsetsDirectional
+                                                  .fromSTEB(2, 5, 2, 5),
+                                              child: Container(
+                                                height: 70,
+                                                width: 70,
+                                                decoration: BoxDecoration(
+                                                  color: Color(0xFFF6F6F6),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          100),
+                                                ),
+                                                child: Image.network(
+                                                  _users[index]['image'],
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.all(2.0),
+                                              child: Text(
+                                                _users[index]['firstName'],
+                                                textAlign: TextAlign.left,
+                                                style: TextStyle(
+                                                  fontFamily: 'Poppins',
+                                                  fontSize: 11,
+                                                ),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.all(0.0),
+                                              child: Text(
+                                                _users[index]['phone'],
+                                                textAlign: TextAlign.left,
+                                                style: TextStyle(
+                                                  fontFamily: 'Poppins',
+                                                  fontSize: 9,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.all(2.0),
-                                      child: Text(
-                                        'Item 3',
-                                        style: TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontSize: 11,
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.all(0.0),
-                                      child: Text(
-                                        'Price',
-                                        style: TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontSize: 9,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                                    );
+                                  }),
                                 ),
-                                Column(
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsets.all(5.0),
+                              )
+                            ],
+                          ),
+                          //item section 4
+                          Column(
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              Row(children: <Widget>[
+                                Padding(
+                                  padding: EdgeInsets.all(5.0),
+                                  child: Text(
+                                    _users[index]['firstName'],
+                                    style: TextStyle(
+                                      fontFamily: 'Inter',
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                ),
+                                Spacer(),
+                                Text(
+                                  "Details   ",
+                                  style: TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                                Text(
+                                  ">   ",
+                                  style: TextStyle(
+                                    fontFamily: 'Poppins',
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                )
+                              ]),
+                              Row(
+                                children: [
+                                  Padding(
+                                    padding:
+                                        const EdgeInsetsDirectional.fromSTEB(
+                                            5, 2, 0, 0),
+                                    child: Text(
+                                      _users[index]['lastName'],
+                                      style: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontSize: 11,
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                              Container(
+                                height: 150,
+                                child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: _users.length,
+                                  itemBuilder: ((context, index) {
+                                    return Padding(
+                                      padding: const EdgeInsets.all(0.0),
                                       child: Container(
-                                        height: 70,
-                                        width: 70,
-                                        decoration: BoxDecoration(
-                                          color: Color(0xFFF6F6F6),
-                                          borderRadius:
-                                              BorderRadius.circular(100),
+                                        margin: const EdgeInsets.symmetric(
+                                          horizontal: 15.0,
+                                          vertical: 10.0,
+                                        ),
+
+                                        // children: <Widget>[
+
+                                        child: Column(
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsetsDirectional
+                                                  .fromSTEB(2, 5, 2, 5),
+                                              child: Container(
+                                                height: 70,
+                                                width: 70,
+                                                decoration: BoxDecoration(
+                                                  color: Color(0xFFF6F6F6),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          100),
+                                                ),
+                                                child: Image.network(
+                                                  _users[index]['image'],
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.all(2.0),
+                                              child: Text(
+                                                _users[index]['firstName'],
+                                                textAlign: TextAlign.left,
+                                                style: TextStyle(
+                                                  fontFamily: 'Poppins',
+                                                  fontSize: 11,
+                                                ),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.all(0.0),
+                                              child: Text(
+                                                _users[index]['phone'],
+                                                textAlign: TextAlign.left,
+                                                style: TextStyle(
+                                                  fontFamily: 'Poppins',
+                                                  fontSize: 9,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.all(2.0),
-                                      child: Text(
-                                        'item 4',
-                                        style: TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontSize: 11,
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.all(0.0),
-                                      child: Text(
-                                        'Price',
-                                        style: TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontSize: 9,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                                    );
+                                  }),
                                 ),
-                              ],
-                            ),
-                          )
+                              )
+                            ],
+                          ),
+                          //item section end
                         ],
                       ),
-                      //item section end
                     ],
                   ),
                 ],
               ),
-            ],
-          ),
-        ),
+            ),
+          );
+        }),
       ),
+      //child: GestureDetector(
+      //onTap: () => FocusScope.of(context).unfocus(),
+
       //bottom navigation bar
 
       bottomNavigationBar: Container(
@@ -887,7 +624,7 @@ class _LiveOrdersState extends State<LiveOrders> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             Padding(
-              padding: EdgeInsets.all(5.0),
+              padding: EdgeInsets.all(1.0),
               child: TextButton(
                 onPressed: () {
                   Navigator.push(context,
@@ -900,7 +637,7 @@ class _LiveOrdersState extends State<LiveOrders> {
                       color: Colors.black,
                     ),
                     Padding(
-                      padding: EdgeInsets.all(3.0),
+                      padding: EdgeInsets.all(1.0),
                       child: Text(
                         'Orders',
                         style: TextStyle(
@@ -916,7 +653,7 @@ class _LiveOrdersState extends State<LiveOrders> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.all(5.0),
+              padding: EdgeInsets.all(1.0),
               child: TextButton(
                 onPressed: () {
                   Navigator.push(context,
@@ -929,7 +666,7 @@ class _LiveOrdersState extends State<LiveOrders> {
                       color: Colors.black,
                     ),
                     Padding(
-                      padding: EdgeInsets.all(3.0),
+                      padding: EdgeInsets.all(1.0),
                       child: Text(
                         'Order History',
                         style: TextStyle(
@@ -945,7 +682,7 @@ class _LiveOrdersState extends State<LiveOrders> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.all(5.0),
+              padding: EdgeInsets.all(1.0),
               child: TextButton(
                 onPressed: () {
                   Navigator.push(context,
@@ -958,7 +695,7 @@ class _LiveOrdersState extends State<LiveOrders> {
                       color: Colors.black,
                     ),
                     Padding(
-                      padding: EdgeInsets.all(3.0),
+                      padding: EdgeInsets.all(1.0),
                       child: Text(
                         'Profile',
                         style: TextStyle(

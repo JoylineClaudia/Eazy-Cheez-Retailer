@@ -1,5 +1,6 @@
 import 'package:eazy_cheez_retail/screens/live_orders.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 //import 'package:google_fonts/google_fonts.dart';
 
 class Profile extends StatefulWidget {
@@ -313,7 +314,7 @@ class _ProfileState extends State<Profile> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             Padding(
-              padding: EdgeInsets.all(5.0),
+              padding: EdgeInsets.all(1.0),
               child: TextButton(
                 onPressed: () {
                   Navigator.push(context,
@@ -326,7 +327,7 @@ class _ProfileState extends State<Profile> {
                       color: Colors.black,
                     ),
                     Padding(
-                      padding: EdgeInsets.all(3.0),
+                      padding: EdgeInsets.all(1.0),
                       child: Text(
                         'Orders',
                         style: TextStyle(
@@ -342,7 +343,7 @@ class _ProfileState extends State<Profile> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.all(5.0),
+              padding: EdgeInsets.all(1.0),
               child: TextButton(
                 onPressed: () {
                   Navigator.push(context,
@@ -355,7 +356,7 @@ class _ProfileState extends State<Profile> {
                       color: Colors.black,
                     ),
                     Padding(
-                      padding: EdgeInsets.all(3.0),
+                      padding: EdgeInsets.all(1.0),
                       child: Text(
                         'Order History',
                         style: TextStyle(
@@ -371,7 +372,7 @@ class _ProfileState extends State<Profile> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.all(5.0),
+              padding: EdgeInsets.all(1.0),
               child: TextButton(
                 onPressed: () {
                   Navigator.push(context,
@@ -384,7 +385,7 @@ class _ProfileState extends State<Profile> {
                       color: Colors.black,
                     ),
                     Padding(
-                      padding: EdgeInsets.all(3.0),
+                      padding: EdgeInsets.all(1.0),
                       child: Text(
                         'Profile',
                         style: TextStyle(
